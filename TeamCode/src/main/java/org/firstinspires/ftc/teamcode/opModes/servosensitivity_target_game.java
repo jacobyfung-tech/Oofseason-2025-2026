@@ -67,6 +67,7 @@ public class servosensitivity_target_game extends NextFTCOpMode {
     public int buffer= 0;
     public int anglegood_streak = 0;
     public double prevtime = 0;
+    public int tolerance = 6;
     @Override
     public void onStartButtonPressed() {
         // Runs ONCE when START is pressed
@@ -92,9 +93,9 @@ public class servosensitivity_target_game extends NextFTCOpMode {
         }
 
         motorExample.setPower(Math.pow(gamepad1.left_stick_x, exponent));
-        deg = ((motorExample.getCurrentPosition()/motorT) * 360) % 360;
+        deg = ((motorExample.getCurrentPosition()/motorT) + 360) % 360;
 
-        if (Math.abs(targetrot - deg) < 2){ //win condition
+        if (Math.abs(targetrot - deg) < tolerance || Math.abs((targetrot + 360) - deg) < tolerance) { //win condition if close enough mode 360
             anglegood_streak += 1;
         }
         else //display target angle
@@ -118,7 +119,7 @@ public class servosensitivity_target_game extends NextFTCOpMode {
                 buffer = 0 ;
 
                 targetrot = Math.random() * 360;
-                if (Math.abs(targetrot - deg) < 2 || Math.abs(targetrot - 360 - deg) < 2){ //wraparounds are kinda annoying
+                if (Math.abs(targetrot - deg) < tolerance || Math.abs(targetrot - 360 - deg) < tolerance){ //wraparounds are kinda annoying
                     targetrot += Math.random()*120; //get away from current rotation if new target is too close
                 }
             }
